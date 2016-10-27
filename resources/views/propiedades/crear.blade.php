@@ -23,11 +23,6 @@
     });
 </script>
 
-<script type="text/javascript" src="//api.filestackapi.com/filestack.js"></script>
-
-<input type="filepicker" data-fp-apikey="AXkfesC0kSTm8qnvgoojOz"
-onchange="alert(event.fpfile.url)">
-
 <div class="form-group-row">
 
     {!! Form::open(array('url' => 'propiedades', 'method' => 'post', 'enctype' => 'multipart/form-data', 'files' => true)) !!}
