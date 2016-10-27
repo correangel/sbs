@@ -82,11 +82,11 @@ return [
 */
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => env('DB_HOST', 'ec2-54-243-200-159.compute-1.amazonaws.com'),
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'davff1g0of3o8g'),
-            'username' => env('DB_USERNAME', 'ugfvozlzrsjgum'),
-            'password' => env('DB_PASSWORD', 'U7s3LSiCS3NKl0dZ40PCI2xwsE'),
+            'database' => env('DB_DATABASE', 'inmobiliaria'),
+            'username' => env('DB_USERNAME', 'esassone'),
+            'password' => env('DB_PASSWORD', 'jelos%4s&'),
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
