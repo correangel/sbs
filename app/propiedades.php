@@ -4,11 +4,10 @@ namespace App;
 ini_set('upload_max_filesize', '20M');
 
 use App\Http\Requests;
-use ClassPreloader\Config;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\File;
 
 
 class propiedades extends Model
@@ -128,36 +127,19 @@ class propiedades extends Model
         //dd($propiedad);
 
         // Operatorias
-        $operatorias = DB::select('
-            SELECT
-                po.*, 
-                m.unidad, 
-                e.descripcion as estado_descripcion
-            FROM
-                propiedades_operatorias po,
-                propiedades p,
-                monedas m,
-                estados e
-            WHERE po.propiedad = p.id
-              AND po.propiedad = ' . $propiedad->id . '
-              AND po.moneda = m.id
-              AND po.estado = e.id
-              ' . $where
-        );
+        $operatorias = propiedades_operatoria::get_operatorias($propiedad->id, $id_operatoria);
         //dd($operatorias);
         foreach($operatorias as $operatoria){
             $propiedad->operatorias[] = $operatoria;
         }
 
-        $imagenes = propiedad_imagenes::all()
-            ->where('propiedad', $propiedad->id);
+        // IMAGENES
+        $imagenes = propiedad_imagenes::get_imagenes($propiedad->id);
         //dd($imagenes);
-        if($imagenes->isEmpty()){
-            $propiedad->imagenes[] = 'sin_imagen.jpg';
-        }else{
+        if( !$imagenes->isEmpty() ){
             // Cargar imagenes
             foreach($imagenes as $imagen){
-                $propiedad->imagenes[] = $imagen->nombre_archivo;
+                $propiedad->imagenes[] = $imagen;
             }
         }
         //dd($propiedad);
@@ -189,54 +171,27 @@ class propiedades extends Model
         ]);
 
         // Operatorias
-        $operatorias    = $request->get('operatoria');
-        $moneda         = $request->get('moneda');
-        $importes       = $request->get('importe');
-        foreach($operatorias as $id => $operatoria){
+        $operatorias        = $request->get('operatoria');
+        $moneda             = $request->get('moneda');
+        $importes           = $request->get('importe');
+        $operatoria_estado  = $request->get('operatoria_estado');
+        foreach($operatorias as $id_op => $operatoria){
             $operatoria = propiedades_operatoria::create([
                 'propiedad'     => $propiedad['id'],
                 'operatoria'    => $operatoria,
-                'importe'       => $importes[ $id ],
-                'moneda'        => $moneda[ $id ],
-                'estado'        => 1       // Activo
+                'importe'       => $importes[ $id_op ],
+                'moneda'        => $moneda[ $id_op ],
+                'estado'        => $operatoria_estado[ $id_op ]
             ]);
         }
         //dd($request->hasFile('imagen_portada'));
 
-        // Imagenes
-        //if($request->hasFile('imagen_portada')){
-            $nombre = time() . $request->file('imagen_portada')->getClientOriginalName();
-            // thumb
-            Image::make( $request->file('imagen_portada')->getRealPath() )
-                ->resize(242.48, 156.16)
-                ->save('img/' . 'thumb_' . $nombre);
-            Image::make( $request->file('imagen_portada')->getRealPath() )
-                ->resize(1000, 644)
-                ->save('img/' . $nombre);
-
-            propiedad_imagenes::create([
-                'propiedad'         => $propiedad['id'],
-                'nombre_archivo'    => $nombre,
-                'rol'               => 'P',   // lista
-                'orden'             => 0
-            ]);
-        //}
+        // IMAGENES
+        if($request->file('imagen_portada')){
+            propiedad_imagenes::guardar_imagen_principal($request->file('imagen_portada'), $propiedad['id']);
+        }
         if($request->hasFile('images')){
-            $i = 1;
-            foreach($request->file('images') as $file) {
-                $nombre = time() . $file->getClientOriginalName();
-                Image::make( $file->getRealPath()  )
-                    ->resize(1000, 644)
-                    ->save('img/' . $nombre);
-
-                propiedad_imagenes::create([
-                    'propiedad'         => $propiedad['id'],
-                    'nombre_archivo'    => $nombre,
-                    'rol'               => 'L',   // lista
-                    'orden'             => $i
-                ]);
-                $i++;
-            }
+            propiedad_imagenes::guardar_imagenes($request->file('images'), $propiedad['id']);
         }
 
         if($request->has('servicios')) {
@@ -280,5 +235,57 @@ class propiedades extends Model
                 'descripcion'           => $request->get('descripcion'),
                 'tipo_propiedad'        => $request->get('tipo_propiedad')
             ]);
+
+        // IMAGENES
+        if($request->file('imagen_portada')){
+            propiedad_imagenes::guardar_imagen_principal($request->file('imagen_portada'), $id);
+        }
+        if($request->hasFile('images')) {
+            propiedad_imagenes::guardar_imagenes($request->file('images'), $id);
+        }
+
+        $imagenes = propiedad_imagenes::get_imagenes($id);
+        // Eliminar imagenes
+        foreach($imagenes as $id => $imagen){
+            if($request->has('imagen_checkbox_' . $imagen->id)) {
+                if ($request->get('imagen_checkbox_' . $imagen->id) == 1) {
+                    propiedad_imagenes::find($imagen->id)->delete();
+                    File::Delete('img/' . $imagen->nombre_archivo);
+                }
+            }
+        }
+
+        // OPERATORIAS
+        $operatorias    = $request->get('operatoria');
+        //dd($operatorias);
+        $id_operatoria      = $request->get('id_operatoria');
+        $moneda             = $request->get('moneda');
+        $importes           = $request->get('importe');
+        $operatoria_estado  = $request->get('operatoria_estado');
+        foreach($operatorias as $id_op => $operatoria){
+            // Verificar si es alta o modificacion
+            $existe = null;
+            if(isset($id_operatoria[ $id_op ])) {
+                $existe = propiedades_operatoria::get_operatorias($id, $id_operatoria[$id_op]);
+                //dd($existe);
+            }
+            if($existe) {
+                DB::table('propiedades_operatorias')->where('id', $id_operatoria[$id_op])
+                    ->update([
+                        'operatoria'    => $operatoria,
+                        'importe'       => $importes[$id_op],
+                        'moneda'        => $moneda[$id_op],
+                        'estado'        => $operatoria_estado[ $id_op ]
+                    ]);
+            }else{
+                propiedades_operatoria::create([
+                    'propiedad'     => $id,
+                    'operatoria'    => $operatoria,
+                    'importe'       => $importes[ $id_op ],
+                    'moneda'        => $moneda[ $id_op ],
+                    'estado'        => $operatoria_estado[ $id_op ]
+                ]);
+            }
+        }
     }
 }

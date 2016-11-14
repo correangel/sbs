@@ -69,7 +69,7 @@
             @else
                 <div class="item">
             @endif
-                    <img src="{{ url('/') }}/img/{{ $imagen }}" class="properties" alt="properties" />
+                    <img src="{{ url('/') }}/img/{{ $imagen->nombre_archivo }}" class="properties" alt="properties" />
                 </div>
           @endforeach
 

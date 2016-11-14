@@ -16,9 +16,6 @@ use App\servicios;
 use App\propiedad_servicios;
 
 use App\Http\Requests;
-use ClassPreloader\Config;
-use Illuminate\Support\Facades\DB;
-use Intervention\Image\ImageManagerStatic as Image;
 
 class propiedadesController extends Controller
 {
@@ -71,7 +68,7 @@ class propiedadesController extends Controller
     function modificar($id)
     {
         //dd(request());
-        propiedades::modificar(Requests(), $id);
+        propiedades::modificar(Request(), $id);
 
         return redirect()->to('propiedades');
     }

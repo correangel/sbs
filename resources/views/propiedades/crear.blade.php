@@ -53,7 +53,6 @@
                                 Toilette        {!! Form::number('toilette', old('toilette'), array('class' => 'form-control') ) !!}
                                 Baños           {!! Form::number('banos', old('banos'), array('class' => 'form-control') ) !!}
                                 Cocheras        {!! Form::number('cocheras', old('cocheras'), array('class' => 'form-control') ) !!}
-                                Imagen de portada {!! Form::file('imagen_portada', array('class' => 'form-control')) !!}
                             </td>
                             <td class="table-active" width="15%">
                                 Servicios           <div>{!! Form::select('servicios', $combo_servicios, null, array('multiple data-actions-box'=>true, 'class' => 'selectpicker', 'name'=>'servicios[]')) !!}</div>
@@ -63,7 +62,6 @@
                                 Sup. Cubierta   {!! Form::number('superficie_cubierta', old('superficie_cubierta'), array('class' => 'form-control') ) !!}
                                 Fecha publicación  {!! Form::date('fecha_publicacion', date('Y-m-d'), array('class' => 'form-control') ) !!}
                                 Expensas        {!! Form::text('expensas', old('expensas'), array('class' => 'form-control') ) !!}
-                                Imagenes (No agregar nuevamente la de portada) {!! Form::file('images[]', array('multiple'=>true, 'class' => 'form-control')) !!}
                             </td>
                         </tr>
                     </table>
@@ -71,9 +69,15 @@
             </tr>
             <tr>
                 <td>
+                    Imagen de portada {!! Form::file('imagen_portada', array('class' => 'form-control')) !!}
+                    Imagenes (No agregar nuevamente la de portada) {!! Form::file('images[]', array('multiple'=>true, 'class' => 'form-control')) !!}
+                </td>
+            </tr>
+            <tr>
+                <td>
 
                     <!-- OPERATORIAS -->
-                    <div class="container">
+                    <div>
                         <div class="row clearfix">
                             <div class="col-md-12 column">
                                 <table class="table table-bordered table-hover" id="tab_logic">
@@ -128,12 +132,12 @@
                 </td>
             </tr>
         </table>
-    <table width="100%">
+    <table width="100%" class="table">
         <tr>
             <td width="80%">
-            {!! Form::submit('Guardar', array('class'=> 'btn btn-primary form-control')) !!}
+                {!! Form::submit('Guardar', array('class'=> 'btn btn-primary form-control')) !!}
             </td><td width="20%">
-            <a href="{{ url('/') }}/propiedades" class="btn btn-danger">Cancelar</a>
+                <a href="{{ url('/') }}/propiedades" class="btn btn-danger">Cancelar</a>
             </td>
         </tr>
     </table>

@@ -42,8 +42,6 @@
                                 URL Mapa        {!! Form::text('ubicacion_url', $propiedad->ubicacion_url, array('class' => 'form-control') ) !!}
                                 Ubicación       {!! Form::text('ubicacion', $propiedad->ubicacion, array('class' => 'form-control') ) !!}
                                 Localidad       {!! Form::text('localidad', $propiedad->localidad, array('class' => 'form-control') ) !!}
-                                Imagen de portada {!! Form::file('imagen_portada', array('class' => 'form-control')) !!}
-                                Imagenes (No agregar nuevamente la de portada) {!! Form::file('images[]', array('multiple'=>true, 'class' => 'form-control')) !!}
 
                             </td>
                             <td class="table-active" width="15%">
@@ -68,6 +66,48 @@
                                 Expensas        {!! Form::text('expensas', $propiedad->expensas, array('class' => 'form-control') ) !!}
 
                             </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Imagen de portada {!! Form::file('imagen_portada', array('class' => 'form-control')) !!}
+                    Imagenes (No agregar nuevamente la de portada) {!! Form::file('images[]', array('multiple'=>true, 'class' => 'form-control')) !!}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="table table-bordered table-inverse">
+                        <tr class="table-active">
+                            @if(!empty($propiedad->imagenes))
+                                @foreach($propiedad->imagenes as $imagen)
+                                <td class="table-active">
+                                    <img src="{{ url('/') }}/img/{{ $imagen->nombre_archivo }}" class="img-responsive" alt="properties">
+                                </td>
+                                @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            @if(!empty($propiedad->imagenes))
+                                @foreach($propiedad->imagenes as $id => $imagen)
+                                <td align="center">
+                                    Eliminar {{ Form::checkbox('imagen_checkbox_' . $imagen->id ,  1, false) }}
+                                </td>
+                                @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            @if(!empty($propiedad->imagenes))
+                                @foreach($propiedad->imagenes as $id => $imagen)
+                                <td align="center">
+                                    {{ Form::number('imagen_orden_' . $imagen->id , $imagen->orden, array('class' => 'form-control')) }}
+                                    @if($imagen->rol == 'P')
+                                        Imagen de portada
+                                    @endif
+                                </td>
+                                @endforeach
+                            @endif
                         </tr>
                     </table>
                 </td>
@@ -106,7 +146,8 @@
                                             {{ $id + 1 }}
                                         </td>
                                         <td>
-                                            {!! Form::select('operatoria[]', $combo_operatorias, $operatoria->id, array('class' => 'form-control') ) !!}
+                                            {{ Form::hidden('id_operatoria[]', $operatoria->id) }}
+                                            {!! Form::select('operatoria[]', $combo_operatorias, $operatoria->operatoria, array('class' => 'form-control') ) !!}
                                         </td>
                                         <td>
                                             {!! Form::select('moneda[]', $combo_monedas, $operatoria->moneda, array('class' => 'form-control') ) !!}
