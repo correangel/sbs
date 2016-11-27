@@ -95,10 +95,10 @@ class propiedades extends Model
             $propiedad->importe = $propiedad->unidad . ' ' . number_format($propiedad->importe, 0, ',', '.');
             $propiedad->estado  = $propiedad->estado_descripcion;
             if( !$imagenes->isEmpty() ) {
-		foreach($imagenes as $imagen){
-	               $propiedad->imagen_thumb    = 'thumb_' . $imagen->nombre_archivo;
-        	        $propiedad->imagen          = $imagen->nombre_archivo;
-		}
+                foreach($imagenes as $imagen){
+                    $propiedad->imagen_thumb    = 'thumb_' . $imagen->nombre_archivo;
+                    $propiedad->imagen          = $imagen->nombre_archivo;
+                }
             }else{
                 $propiedad->imagen_thumb    = 'thumb_sin_imagen.jpg';
                 $propiedad->imagen          = 'sin_imagen.jpg';

@@ -26,7 +26,7 @@ class propiedad_imagenes extends Model
 
     static function guardar_imagenes($imagenes, $id_propiedad)
     {
-        // Inicializar el orden según si existen o no imagenes cargadas con anterioridad
+        // Inicializar el orden segï¿½n si existen o no imagenes cargadas con anterioridad
         $imagen_orden = DB::select('select max(orden) as orden from propiedad_imagenes where propiedad = ' . $id_propiedad . ';');
         if(!empty($imagen_orden)){
             $i = $imagen_orden[0]->orden + 1;
@@ -54,7 +54,7 @@ class propiedad_imagenes extends Model
         $nombre = time() . $imagen->getClientOriginalName();
         // thumb
         Image::make( $imagen->getRealPath() )
-            ->resize(242.48, 156.16)
+            ->resize(330, 213)
             ->save('img/' . 'thumb_' . $nombre);
         Image::make( $imagen->getRealPath() )
             ->resize(1000, 644)

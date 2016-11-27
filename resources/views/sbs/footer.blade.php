@@ -37,9 +37,9 @@
              <div class="col-lg-3 col-sm-3">
                     <h4>Contactenos</h4>
                     <p><b>SBS Servicios inmobiliarios.</b><br>
-<span class="glyphicon glyphicon-map-marker"></span> 5678 Calle, CABA <br>
-<span class="glyphicon glyphicon-envelope"></span> info@sbsinmobiliaria.com.ar<br>
-<span class="glyphicon glyphicon-earphone"></span> (+5411) 4567-7890</p>
+<!-- <span class="glyphicon glyphicon-map-marker"></span> 5678 Calle, CABA <br>  -->
+<span class="glyphicon glyphicon-envelope"></span> sbsinmobiliaria@gmail.com<br>
+<!-- <span class="glyphicon glyphicon-earphone"></span> (+5411) 4567-7890</p>  -->
             </div>
         </div>
 <p class="copyright">Copyright 2016. Todos los derechos reservados.	</p>
