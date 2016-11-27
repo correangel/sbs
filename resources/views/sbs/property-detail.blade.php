@@ -91,7 +91,7 @@
 
   </div>
   <div><h4><span class="glyphicon glyphicon-map-marker"></span> Ubicación</h4>
-<div class="well">{!! $propiedad->ubicacion_url !!}</div>
+<div class="well"><div class="google-maps">{!! $propiedad->ubicacion_url !!}</div></div>
   </div>
 
   </div>
