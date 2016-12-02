@@ -77,7 +77,7 @@ class propiedades extends Model
                 $busqueda_operatoria = 1;
             }
             $propiedades = DB::table('propiedades')//$propiedades = self::table('propiedades')
-                ->select('propiedades.*', 'propiedades_operatorias.*', 'propiedades_operatorias.id as id_operatoria', 'monedas.unidad', 'estados.descripcion as estado_descripcion')
+                ->select('propiedades_operatorias.*', 'propiedades_operatorias.id as id_operatoria', 'monedas.unidad', 'estados.descripcion as estado_descripcion', 'propiedades.*')
                 ->join('propiedades_operatorias', 'propiedades.id', '=', 'propiedades_operatorias.propiedad')
                 ->join('monedas', 'propiedades_operatorias.moneda', '=', 'monedas.id')
                 ->join('estados', 'propiedades_operatorias.estado', '=', 'estados.id')
